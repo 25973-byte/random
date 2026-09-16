@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Rolebound — ระบบสุ่มบทบาท</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800&display=swap');
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Prompt,sans-serif;background:#06070d;color:#f5f5f7}
+body{overflow-x:hidden}.bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 20% 20%,#25134c 0,transparent 32%),radial-gradient(circle at 80% 70%,#092c3b 0,transparent 30%),linear-gradient(135deg,#05060b,#0c0d16 55%,#070a12)}
+.bg:after{content:"";position:absolute;inset:0;background-image:linear-gradient(#fff1 1px,transparent 1px),linear-gradient(90deg,#fff1 1px,transparent 1px);background-size:70px 70px;mask-image:linear-gradient(to bottom,transparent,#000 25%,transparent 90%);animation:grid 20s linear infinite}
+@keyframes grid{to{background-position:70px 70px}}
+.particles{position:fixed;inset:0;pointer-events:none;z-index:-1}.p{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.35;animation:float 7s infinite ease-in-out}
+@keyframes float{50%{transform:translateY(-35px) translateX(20px);opacity:.8}}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}.shell{width:min(1100px,100%)}.glass{background:#ffffff0b;border:1px solid #ffffff18;backdrop-filter:blur(18px);box-shadow:0 25px 80px #0008;border-radius:28px}
+.logo{text-align:center;margin-bottom:28px}.logo .mark{font-size:52px}.logo h1{font-family:Orbitron,sans-serif;letter-spacing:3px;margin:6px 0;font-size:clamp(25px,5vw,44px)}.logo p{color:#a9acbb;margin:0}
+.page{display:none;animation:enter .45s ease}.page.active{display:block}@keyframes enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.home-card{padding:40px}.home-card h2{text-align:center;font-size:25px;margin:0 0 24px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:20px}.choice{padding:32px;border-radius:22px;border:1px solid #ffffff16;background:#ffffff08;color:#fff;text-align:left;cursor:pointer;transition:.25s}.choice:hover{transform:translateY(-5px);border-color:#a78bfa88;background:#ffffff12;box-shadow:0 15px 45px #0007}.choice .icon{font-size:42px}.choice h3{margin:14px 0 5px;font-size:22px}.choice p{color:#aeb1bf;margin:0}.choice.admin{border-color:#c9a84a33}
+button,.btn{font:inherit;border:0;cursor:pointer}.primary{background:linear-gradient(135deg,#8b5cf6,#4f46e5);color:white;padding:14px 22px;border-radius:14px;font-weight:600;box-shadow:0 10px 30px #5b21b655;transition:.2s}.primary:hover{transform:translateY(-2px);filter:brightness(1.1)}.danger{background:#ef44441b;color:#ff8b8b;border:1px solid #ef444444;padding:10px 14px;border-radius:11px}.ghost{background:#ffffff0b;color:#ddd;border:1px solid #ffffff16;padding:10px 14px;border-radius:11px}
+.center{text-align:center}.panel{padding:38px;max-width:720px;margin:auto}.eyebrow{color:#a78bfa;text-transform:uppercase;letter-spacing:3px;font-size:12px}.panel h2{font-size:38px;margin:8px 0}.panel .sub{color:#aaa;line-height:1.8}.roll{font-size:20px;padding:17px 35px;margin-top:20px}.status{color:#f3c969;margin-top:15px}.role-card{padding:38px;max-width:650px;margin:25px auto;text-align:center;border:1px solid #a78bfa33;box-shadow:0 0 60px #6d28d922}.role-card .emoji{font-size:48px}.role-card h2{font-size:42px;margin:10px 0}.role-card p{color:#b9bac5;line-height:1.8}.line-btn{display:inline-block;text-decoration:none;background:#06c755;color:white;padding:13px 24px;border-radius:13px;font-weight:600;margin-top:12px}.disabled{opacity:.5;pointer-events:none;background:#555}.note{font-size:13px;color:#888;margin-top:18px}
+.form{max-width:450px;margin:auto}.field{margin:16px 0}.field label{display:block;color:#bbb;margin-bottom:7px;font-size:14px}.field input,.field textarea,.field select{width:100%;padding:13px 14px;border-radius:12px;background:#05060b;border:1px solid #ffffff18;color:#fff;outline:none;font:inherit}.field textarea{min-height:100px;resize:vertical}.error{color:#ff7d7d;background:#ff000010;border:1px solid #ff555522;padding:10px;border-radius:10px;margin:12px 0}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}.topbar h2{margin:0}.dash{display:grid;grid-template-columns:210px 1fr;gap:20px}.side{padding:18px;height:max-content;position:sticky;top:20px}.side button{width:100%;text-align:left;margin:4px 0;background:transparent;color:#bbb;padding:12px;border-radius:10px}.side button:hover,.side button.sel{background:#ffffff0c;color:#fff}.main{padding:25px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{padding:18px;border-radius:16px;background:#ffffff08;border:1px solid #ffffff12}.stat b{font-size:27px;display:block}.stat span{color:#999;font-size:13px}.roles{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px}.role-item{padding:18px;border-radius:17px;background:#ffffff07;border:1px solid #ffffff12}.role-item h3{margin:0 0 5px}.role-item p{color:#999;font-size:13px;min-height:38px}.role-actions{display:flex;gap:8px;flex-wrap:wrap}.pill{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;margin-bottom:10px}.on{background:#22c55e18;color:#6ee7a1}.off{background:#ef444418;color:#ff9b9b}.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.show{display:flex}.modal-box{width:min(520px,100%);padding:28px}.modal-box h3{margin-top:0}.switch{display:flex;align-items:center;gap:10px}.switch input{width:20px;height:20px}.hidden{display:none!important}
+.shuffle{font-size:28px;font-weight:700;min-height:55px;margin:25px 0;color:#d8ccff}.spinner{width:46px;height:46px;border:4px solid #ffffff18;border-top-color:#a78bfa;border-radius:50%;animation:spin .8s linear infinite;margin:15px auto}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:760px){.choices,.dash,.roles{grid-template-columns:1fr}.side{position:static}.home-card,.panel,.main{padding:24px}.stats{grid-template-columns:1fr}.role-card h2{font-size:32px}.topbar{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="particles" id="particles"></div>
+<div class="wrap"><div class="shell">
+<div class="logo"><div class="mark">✦</div><h1>ROLEBOUND</h1><p>ระบบสุ่มบทบาทสำหรับผู้มาเยือน</p></div>
+
+<section id="home" class="page active"><div class="glass home-card"><h2>เลือกวิธีเข้าสู่ระบบ</h2><div class="choices">
+<button class="choice" onclick="goGuest()"><div class="icon">👤</div><h3>ผู้มาเยือน</h3><p>เข้าสู่หน้าสุ่มบทบาทโดยไม่ต้องสมัครสมาชิก</p></button>
+<button class="choice admin" onclick="show('admin')"><div class="icon">👑</div><h3>ผู้กุมอำนาจ</h3><p>เข้าสู่แผงควบคุมเพื่อจัดการบทบาท</p></button>
+</div></div></section>
+
+<section id="guest" class="page"><div class="glass panel"><div class="eyebrow">GUEST ACCESS</div><h2 id="guestTitle">พร้อมหรือยัง?</h2><p class="sub" id="guestSub">บทบาทของคุณจะถูกกำหนดเพียงครั้งเดียวสำหรับ Browser นี้</p><div id="shuffleBox"><button class="primary roll" onclick="roll()">🎲 สุ่มบทบาท</button></div><div id="shuffleAnim" class="hidden"><div class="spinner"></div><div class="shuffle" id="shuffleText">กำลังค้นหาบทบาท...</div></div><div id="guestResult"></div><button class="ghost" onclick="show('home')" style="margin-top:20px">← กลับหน้าแรก</button></div></section>
+
+<section id="result" class="page"><div class="glass panel"><div class="eyebrow">YOUR DESTINY</div><h2>🎉 ผลลัพธ์ของคุณ</h2><div id="resultCard"></div><p class="note">คุณสามารถสุ่มบทบาทได้เพียงครั้งเดียว</p><button class="ghost" onclick="goGuest()">← ดูบทบาทของฉัน</button></div></section>
+
+<section id="admin" class="page"><div class="glass panel"><div class="eyebrow">RESTRICTED AREA</div><h2>พื้นที่ผู้กุมอำนาจ</h2><p class="sub">กรอกรหัสลับเพื่อเข้าสู่แผงควบคุม</p><div class="form"><div class="field"><label>รหัสลับ</label><input id="secret" type="password" autocomplete="current-password" placeholder="••••••••••••"></div><div id="loginErr"></div><button class="primary" style="width:100%" onclick="login()">เข้าสู่ระบบ</button><button class="ghost" style="width:100%;margin-top:10px" onclick="show('home')">กลับหน้าแรก</button></div></div></section>
+
+<section id="dashboard" class="page"><div class="topbar"><h2>แผงควบคุมผู้กุมอำนาจ</h2><button class="ghost" onclick="logout()">🚪 ออกจากระบบ</button></div><div class="dash"><aside class="glass side"><button class="sel">🏠 Dashboard</button><button onclick="openRoleForm()">➕ เพิ่มบทบาท</button><button onclick="window.scrollTo({top:0,behavior:'smooth'})">📊 สถิติ</button><button onclick="logout()">🚪 ออกจากระบบ</button></aside><main class="glass main"><div class="stats"><div class="stat"><b id="total">0</b><span>บทบาททั้งหมด</span></div><div class="stat"><b id="enabled">0</b><span>เปิดใช้งาน</span></div><div class="stat"><b id="disabled">0</b><span>ปิดใช้งาน</span></div></div><div class="topbar" style="margin-top:25px"><h3>จัดการบทบาท</h3><button class="primary" onclick="openRoleForm()">+ เพิ่มบทบาท</button></div><div id="roleList" class="roles"></div></main></div></section>
+</div></div>
+
+<div class="modal" id="roleModal"><div class="glass modal-box"><h3 id="formTitle">เพิ่มบทบาท</h3><input type="hidden" id="editId"><div class="field"><label>ชื่อบทบาท</label><input id="rName" placeholder="เช่น ผู้พิทักษ์"></div><div class="field"><label>คำอธิบายบทบาท</label><textarea id="rDesc" placeholder="อธิบายภารกิจของบทบาท"></textarea></div><div class="field"><label>LINE Link</label><input id="rLine" placeholder="https://line.me/..."></div><div class="field switch"><input id="rEnabled" type="checkbox" checked><label for="rEnabled">เปิดใช้งาน</label></div><div style="display:flex;gap:10px;justify-content:flex-end"><button class="ghost" onclick="closeModal()">ยกเลิก</button><button class="primary" onclick="saveRole()">บันทึกบทบาท</button></div></div></div>
+<div class="modal" id="deleteModal"><div class="glass modal-box"><h3>ยืนยันการลบ</h3><p>คุณแน่ใจหรือไม่ว่าต้องการลบบทบาทนี้?</p><div style="display:flex;gap:10px;justify-content:flex-end"><button class="ghost" onclick="closeDelete()">ยกเลิก</button><button class="danger" onclick="confirmDelete()">ยืนยันการลบ</button></div></div></div>
+
+<script>
+const KEY='rolebound_roles_v1', GUEST='rolebound_guest_v1', AUTH='rolebound_admin_auth_v1';
+const DEMO='mjmingzhou2025';
+const defaults=[
+{id:'guardian',name:'ผู้พิทักษ์',description:'ภารกิจของคุณคือการดูแลและปกป้องสมาชิกในกลุ่ม',lineUrl:'',enabled:true},
+{id:'planner',name:'นักวางแผน',description:'วางกลยุทธ์ ประสานงาน และทำให้ภารกิจเดินหน้า',lineUrl:'',enabled:true},
+{id:'explorer',name:'นักสำรวจ',description:'ค้นหาเส้นทางใหม่และรวบรวมข้อมูลสำคัญ',lineUrl:'',enabled:true},
+{id:'messenger',name:'ผู้ส่งสาร',description:'นำส่งข้อมูลและเชื่อมต่อสมาชิกให้สื่อสารกัน',lineUrl:'',enabled:true},
+{id:'keeper',name:'ผู้ดูแล',description:'ดูแลความเรียบร้อยและจัดการทรัพยากรของกลุ่ม',lineUrl:'',enabled:true},
+{id:'strategist',name:'นักยุทธศาสตร์',description:'วิเคราะห์สถานการณ์และออกแบบแผนรับมือ',lineUrl:'',enabled:true}
+];
+let roles=JSON.parse(localStorage.getItem(KEY)||'null')||defaults;
+let deleteId=null;
+function persist(){localStorage.setItem(KEY,JSON.stringify(roles))}
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='dashboard')renderDash();if(id==='guest')renderGuest();if(id==='result')renderResult()}
+function guestData(){return JSON.parse(localStorage.getItem(GUEST)||'null')}
+function goGuest(){show('guest')}
+function renderGuest(){let g=guestData();if(g){document.getElementById('guestTitle').textContent='คุณได้รับบทบาทไปแล้ว';document.getElementById('guestSub').textContent='คุณไม่สามารถสุ่มบทบาทใหม่ได้ใน Browser นี้';document.getElementById('shuffleBox').classList.add('hidden');document.getElementById('guestResult').innerHTML=card(g)}else{document.getElementById('guestTitle').textContent='พร้อมหรือยัง?';document.getElementById('guestSub').textContent='บทบาทของคุณจะถูกกำหนดเพียงครั้งเดียวสำหรับ Browser นี้';document.getElementById('shuffleBox').classList.remove('hidden');document.getElementById('guestResult').innerHTML=''}}
+function activeRoles(){return roles.filter(r=>r.enabled)}
+function roll(){if(guestData())return;let a=activeRoles();if(!a.length){document.getElementById('shuffleBox').innerHTML='<div class="status">ขณะนี้ยังไม่มีบทบาทที่เปิดให้สุ่ม</div>';return}document.getElementById('shuffleBox').classList.add('hidden');document.getElementById('shuffleAnim').classList.remove('hidden');let i=0, start=Date.now();let timer=setInterval(()=>{let x=a[Math.floor(Math.random()*a.length)];document.getElementById('shuffleText').textContent=x.name;i++;if(Date.now()-start>=2300){clearInterval(timer);let r=a[Math.floor(Math.random()*a.length)];let g={roleId:r.id,roleName:r.name,description:r.description,lineUrl:r.lineUrl,timestamp:new Date().toISOString(),hasRolled:true};localStorage.setItem(GUEST,JSON.stringify(g));setTimeout(()=>{show('result')},450)}},100)}
+function card(g){let link=g.lineUrl?`<a class="line-btn" href="${esc(g.lineUrl)}" target="_blank" rel="noopener">LINE ↗</a>`:`<span class="line-btn disabled">ยังไม่มีลิงก์ LINE</span>`;return `<div class="glass role-card"><div class="emoji">✦</div><div class="eyebrow">ROLE ASSIGNED</div><h2>${esc(g.roleName)}</h2><p>${esc(g.description||'')}</p>${link}</div>`}
+function renderResult(){let g=guestData();document.getElementById('resultCard').innerHTML=g?card(g):'<p>ยังไม่มีผลลัพธ์</p>'}
+function login(){let v=document.getElementById('secret').value;if(v===DEMO){sessionStorage.setItem(AUTH,'1');document.getElementById('secret').value='';document.getElementById('loginErr').innerHTML='';show('dashboard')}else document.getElementById('loginErr').innerHTML='<div class="error">รหัสลับไม่ถูกต้อง</div>'}
+function logout(){sessionStorage.removeItem(AUTH);show('home')}
+function requireAuth(){if(!sessionStorage.getItem(AUTH)){show('admin');return false}return true}
+function renderDash(){if(!requireAuth())return;let on=roles.filter(r=>r.enabled).length;document.getElementById('total').textContent=roles.length;document.getElementById('enabled').textContent=on;document.getElementById('disabled').textContent=roles.length-on;document.getElementById('roleList').innerHTML=roles.map(r=>`<div class="role-item"><span class="pill ${r.enabled?'on':'off'}">${r.enabled?'● เปิดใช้งาน':'● ปิดใช้งาน'}</span><h3>${esc(r.name)}</h3><p>${esc(r.description)}</p><small style="color:#777">LINE: ${r.lineUrl?'เชื่อมต่อแล้ว':'ยังไม่มีลิงก์'}</small><div class="role-actions" style="margin-top:13px"><button class="ghost" onclick="editRole('${r.id}')">แก้ไข</button><button class="ghost" onclick="toggleRole('${r.id}')">${r.enabled?'ปิดใช้งาน':'เปิดใช้งาน'}</button><button class="danger" onclick="askDelete('${r.id}')">ลบ</button></div></div>`).join('')||'<p style="color:#999">ยังไม่มีบทบาท</p>'}
+function openRoleForm(r=null){if(!requireAuth())return;document.getElementById('formTitle').textContent=r?'แก้ไขบทบาท':'เพิ่มบทบาท';document.getElementById('editId').value=r?r.id:'';document.getElementById('rName').value=r?r.name:'';document.getElementById('rDesc').value=r?r.description:'';document.getElementById('rLine').value=r?r.lineUrl:'';document.getElementById('rEnabled').checked=r?r.enabled:true;document.getElementById('roleModal').classList.add('show')}
+function editRole(id){let r=roles.find(x=>x.id===id);openRoleForm(r)}
+function saveRole(){let name=document.getElementById('rName').value.trim();if(!name){alert('กรุณากรอกชื่อบทบาท');return}let id=document.getElementById('editId').value||('role_'+Date.now());let obj={id,name,description:document.getElementById('rDesc').value.trim(),lineUrl:document.getElementById('rLine').value.trim(),enabled:document.getElementById('rEnabled').checked,updatedAt:new Date().toISOString()};let idx=roles.findIndex(r=>r.id===id);if(idx>=0)roles[idx]={...roles[idx],...obj};else roles.push({...obj,createdAt:new Date().toISOString()});persist();closeModal();renderDash()}
+function toggleRole(id){let r=roles.find(x=>x.id===id);if(r){r.enabled=!r.enabled;persist();renderDash()}}
+function askDelete(id){deleteId=id;document.getElementById('deleteModal').classList.add('show')}
+function confirmDelete(){roles=roles.filter(r=>r.id!==deleteId);persist();deleteId=null;closeDelete();renderDash()}
+function closeModal(){document.getElementById('roleModal').classList.remove('show')}
+function closeDelete(){document.getElementById('deleteModal').classList.remove('show')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+for(let i=0;i<35;i++){let p=document.createElement('i');p.className='p';p.style.left=Math.random()*100+'%';p.style.top=Math.random()*100+'%';p.style.animationDelay=Math.random()*7+'s';document.getElementById('particles').appendChild(p)}
+window.addEventListener('load',()=>{if(location.hash==='#dashboard')show('dashboard')});
+</script>
+</body>
+</html>
